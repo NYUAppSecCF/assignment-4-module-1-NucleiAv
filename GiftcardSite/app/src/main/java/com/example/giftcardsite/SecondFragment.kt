@@ -29,10 +29,9 @@ class SecondFragment : Fragment() {
     private final val jsonType = "application/json; charset=utf-8".toMediaType()
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_second, container, false)
     }
 
@@ -45,36 +44,38 @@ class SecondFragment : Fragment() {
             var password : String = view.findViewById<EditText>(R.id.registerPassword).text.toString()
             var password2 : String = view.findViewById<EditText>(R.id.registerConfirmPassword).text.toString()
 
-            var builder: Retrofit.Builder = Retrofit.Builder().baseUrl("http://appsec.moyix.net").addConverterFactory(GsonConverterFactory.create())
+            var builder: Retrofit.Builder = Retrofit.Builder()
+                .baseUrl("https://appsec.moyix.net")
+                .addConverterFactory(GsonConverterFactory.create())
             var retrofit: Retrofit = builder.build()
             var client: UserInterface = retrofit.create(UserInterface::class.java)
-            var loggedInUser: User? = null;
+            var loggedInUser: User? = null
             val registerInfo = RegisterInfo(username, email, password, password2)
             Log.d("Register Going", "Going to register now.")
             client.registerUser(registerInfo)?.enqueue(object : Callback<User?> {
                 override fun onFailure(call: Call<User?>, t: Throwable) {
                     Log.d("Register Failure", "Register Failure in onFailure")
                     Log.d("Register Failure", t.message.toString())
-
                 }
 
                 override fun onResponse(call: Call<User?>, response: Response<User?>) {
-                    if (!response.isSuccessful){
+                    if (!response.isSuccessful) {
                         Log.d("Register Failure", "Register failure. Yay.")
                         Toast.makeText(activity, "Register Failed", Toast.LENGTH_LONG).show()
                     } else {
                         loggedInUser = response.body()
                         Log.d("Register Success", "Register success. Boo.")
                         Log.d("Register Success", "Token:" + loggedInUser?.token.toString())
-                        var intent = Intent(Intent.ACTION_VIEW)
-                        intent.type = "text/giftcards_browse"
-                        intent.data = Uri.parse("https://appsec.moyix.net/api/index")
-                        intent.putExtra("User", loggedInUser);
+                        val intent = Intent(requireContext(), ProductScrollingActivity::class.java)
+                        intent.setDataAndType(
+                            Uri.parse("https://appsec.moyix.net/api/index"),
+                            "text/giftcards_browse"
+                        )
+                        intent.putExtra("User", loggedInUser)
                         startActivity(intent)
                     }
                 }
             })
-
         }
     }
 }

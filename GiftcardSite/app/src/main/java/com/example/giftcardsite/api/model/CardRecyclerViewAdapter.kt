@@ -15,10 +15,12 @@ class CardRecyclerViewAdapter(val context: Context, private val cardList: List<C
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun setData(card: Card?) {
-            val image : CircleImageView = itemView.findViewById(R.id.image_view)
-            val text : TextView = itemView.findViewById(R.id.name)
+            val image: CircleImageView = itemView.findViewById(R.id.image_view)
+            val text: TextView = itemView.findViewById(R.id.name)
             if (card != null) {
-                Glide.with(context).asBitmap().load("http://appsec.moyix.net/" + card.product?.productImageLink).into(image)
+                Glide.with(context).asBitmap()
+                    .load("https://appsec.moyix.net/" + card.product?.productImageLink)
+                    .into(image)
             }
             if (card != null) {
                 text.text = card.amount.toString()
@@ -27,7 +29,7 @@ class CardRecyclerViewAdapter(val context: Context, private val cardList: List<C
             image.setOnClickListener {
                 if (card != null) {
                     val localUser = user
-                    val intent = Intent(context, UseCard::class.java).apply{
+                    val intent = Intent(context, UseCard::class.java).apply {
                         putExtra("User", localUser)
                         putExtra("Card", card)
                     }
@@ -38,7 +40,6 @@ class CardRecyclerViewAdapter(val context: Context, private val cardList: List<C
                 }
             }
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
@@ -47,8 +48,7 @@ class CardRecyclerViewAdapter(val context: Context, private val cardList: List<C
     }
 
     override fun getItemCount(): Int {
-        if (cardList == null)
-            return 0
+        if (cardList == null) return 0
         return cardList.size
     }
 
