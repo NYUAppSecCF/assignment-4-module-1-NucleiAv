@@ -1,5 +1,4 @@
 package com.example.giftcardsite.api.model
-
 import android.content.Context
 import android.content.Intent
 import android.util.Log
